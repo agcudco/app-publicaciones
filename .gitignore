@@ -1,0 +1,65 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
+.classpath
+.project
+bin/
+.metadata
+.tmp
+.log
+
+# Logs
+logs/
+*.log
+*.log.*
+goat*.log
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Test reports
+surefire/
+failsafe/
+test-results/
+test-output/
+
+# Package files
+*.jar
+*.war
+*.class
+*.tomcat/
+
+# Swagger and OpenAPI
+swagger-ui/
+api-docs/
+
+# Optional: if you use Docker
+docker-compose.override.yml
+*.pid
