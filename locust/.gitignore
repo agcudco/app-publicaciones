@@ -1,0 +1,58 @@
+# Archivos generados por Maven
+target/
+*.class
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+
+# Archivos de configuración del IDE
+.idea/
+.project
+.cproject
+.settings/
+
+# Archivos de depuración
+*.log
+*.out
+*.pid
+
+# Archivos de distribución
+*.jar
+*.war
+*.ear
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de prueba
+locust/__pycache__/
+locust/*.pyc
+
+# Archivos específicos de Locust
+locustfile.pyc
+
+# Archivos de configuración de Docker
+docker-compose.override.yml
+
+# Archivos de configuración de IntelliJ IDEA
+*.iml
+*.ipr
+*.iws
+
+# Archivos de configuración de Eclipse
+.classpath
+.project
+.settings/
+
+# Archivos de configuración de VSCode
+.vscode/
+
+# Archivos de configuración de Gradle
+build/
+.gradle.lock
+
+# Archivos de configuración de Node.js
+node_modules/
+package-lock.json

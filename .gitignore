@@ -63,3 +63,7 @@ api-docs/
 # Optional: if you use Docker
 docker-compose.override.yml
 *.pid
+
+# Archivos de prueba
+locust/__pycache__/
+locust/*.pyc
