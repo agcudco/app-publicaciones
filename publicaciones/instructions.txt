@@ -1,0 +1,455 @@
+# 📦 INSTRUCCIONES PARA CREAR EL PROYECTO SPRING BOOT
+
+## 🔧 PASO 1: Crear Proyecto Maven en Spring Initializr
+URL: https://start.spring.io/
+
+Configuración:
+- Project: Maven
+- Language: Java
+- Spring Boot Version: 3.x (ej. 3.4.5)
+- Project Metadata:
+  - Group: com.ejemplo
+  - Artifact: publicaciones
+  - Name: PublicacionesApplication
+  - Packaging: Jar
+  - Java: 21
+
+Dependencias:
+- Spring Web
+- Spring Data JPA
+- PostgreSQL Driver
+- Lombok
+- Spring Boot DevTools (opcional)
+- Swagger UI (usar SpringFox o SpringDoc)
+
+Descarga el proyecto y ábrelo en tu IDE (Eclipse / IntelliJ).
+
+---
+
+## 📁 PASO 2: Estructura del Proyecto
+
+src/
+└── main/
+    ├── java/
+    │   └── com.ejemplo.publicaciones/
+    │       ├── PublicacionesApplication.java
+    │       ├── config/
+    │       │   ├── DataLoader.java
+    │       │   └── SwaggerConfig.java
+    │       ├── controller/
+    │       │   ├── AutorController.java
+    │       │   ├── LibroController.java
+    │       │   └── ArticuloCientificoController.java
+    │       ├── dto/
+    │       │   ├── AutorDto.java
+    │       │   ├── LibroDto.java
+    │       │   ├── ArticuloCientificoDto.java
+    │       │   └── ResponseDto.java
+    │       ├── entity/
+    │       │   ├── Autor.java
+    │       │   ├── Publicacion.java
+    │       │   ├── Libro.java
+    │       │   └── ArticuloCientifico.java
+    │       ├── repository/
+    │       │   ├── AutorRepository.java
+    │       │   ├── LibroRepository.java
+    │       │   └── ArticuloCientificoRepository.java
+    │       └── service/
+    │           ├── AutorService.java
+    │           ├── LibroService.java
+    │           └── ArticuloCientificoService.java
+    └── resources/
+        ├── application.yml
+        └── data.sql
+
+---
+
+## 🧱 PASO 3: Crear Entidades
+
+### Archivo: Publicacion.java
+package com.ejemplo.publicaciones.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Inheritance(strategy = InheritanceType.JOINED)
+@Entity
+public abstract class Publicacion {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String titulo;
+    private int añoPublicacion;
+    private String editorial;
+    private String isbn;
+    private String resumen;
+}
+
+---
+
+### Archivo: Autor.java
+package com.ejemplo.publicaciones.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+public class Autor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nombre;
+    private String apellido;
+    private String nacionalidad;
+    private String institucion;
+    private String email;
+    private String biografia;
+
+    @OneToMany(mappedBy = "autor")
+    @JsonManagedReference
+    private List<Libro> libros;
+
+    @OneToMany(mappedBy = "autor")
+    @JsonManagedReference
+    private List<ArticuloCientifico> articulos;
+}
+
+---
+
+### Archivo: Libro.java
+package com.ejemplo.publicaciones.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Getter
+@Setter
+public class Libro extends Publicacion {
+
+    private String genero;
+    private int numeroPaginas;
+
+    @ManyToOne
+    @JoinColumn(name = "autor_id")
+    @JsonBackReference
+    private Autor autor;
+}
+
+---
+
+### Archivo: ArticuloCientifico.java
+package com.ejemplo.publicaciones.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Getter
+@Setter
+public class ArticuloCientifico extends Publicacion {
+
+    private String areaInvestigacion;
+    private String revista;
+
+    @ManyToOne
+    @JoinColumn(name = "autor_id")
+    @JsonBackReference
+    private Autor autor;
+}
+
+---
+
+## 🗂 PASO 4: Repositorios
+
+### Archivo: AutorRepository.java
+package com.ejemplo.publicaciones.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.ejemplo.publicaciones.entity.Autor;
+
+public interface AutorRepository extends JpaRepository<Autor, Long> {}
+
+---
+
+### Archivo: LibroRepository.java
+package com.ejemplo.publicaciones.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.ejemplo.publicaciones.entity.Libro;
+
+public interface LibroRepository extends JpaRepository<Libro, Long> {}
+
+---
+
+### Archivo: ArticuloCientificoRepository.java
+package com.ejemplo.publicaciones.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.ejemplo.publicaciones.entity.ArticuloCientifico;
+
+public interface ArticuloCientificoRepository extends JpaRepository<ArticuloCientifico, Long> {}
+
+---
+
+## 📦 PASO 5: DTOs
+
+### Archivo: AutorDto.java
+package com.ejemplo.publicaciones.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AutorDto {
+    private String nombre;
+    private String apellido;
+    private String nacionalidad;
+    private String institucion;
+    private String email;
+    private String biografia;
+}
+
+---
+
+### Archivo: LibroDto.java
+package com.ejemplo.publicaciones.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class LibroDto {
+    private String titulo;
+    private int añoPublicacion;
+    private String editorial;
+    private String isbn;
+    private String resumen;
+    private String genero;
+    private int numeroPaginas;
+    private Long autorId;
+}
+
+---
+
+### Archivo: ArticuloCientificoDto.java
+package com.ejemplo.publicaciones.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ArticuloCientificoDto {
+    private String titulo;
+    private int añoPublicacion;
+    private String editorial;
+    private String isbn;
+    private String resumen;
+    private String areaInvestigacion;
+    private String revista;
+    private Long autorId;
+}
+
+---
+
+### Archivo: ResponseDto.java
+package com.ejemplo.publicaciones.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class ResponseDto {
+    private String mensaje;
+    private Object dato;
+}
+
+---
+
+## ⚙️ PASO 6: Servicios
+
+### Archivo: AutorService.java
+(Ver código completo en ejemplo anterior)
+
+### Archivo: LibroService.java
+(Ver código completo en ejemplo anterior)
+
+### Archivo: ArticuloCientificoService.java
+(Ver código completo en ejemplo anterior)
+
+---
+
+## 🕹 PASO 7: Controladores
+
+### Archivo: AutorController.java
+(Ver código completo en ejemplo anterior)
+
+### Archivo: LibroController.java
+(Ver código completo en ejemplo anterior)
+
+### Archivo: ArticuloCientificoController.java
+(Ver código completo en ejemplo anterior)
+
+---
+
+## 🛠 PASO 8: Configuración
+
+### Archivo: application.yml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/api_db
+    username: postgres
+    password: tu_contraseña
+  jpa:
+    hibernate:
+      use-new-id-generator-mappings: false
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+server:
+  port: 8080
+
+---
+
+## 🧪 JSON DE PRUEBA PARA POSTMAN
+
+### 🟢 Registrar un Autor
+POST /autores
+{
+  "nombre": "Carlos",
+  "apellido": "García",
+  "nacionalidad": "Colombiano",
+  "institucion": "Universidad Nacional",
+  "email": "carlos@example.com",
+  "biografia": "Experto en inteligencia artificial"
+}
+
+---
+
+### 🟢 Registrar un Libro
+POST /libros
+{
+  "titulo": "Inteligencia Artificial",
+  "añoPublicacion": 2023,
+  "editorial": "Alfa",
+  "isbn": "978-3-16-148410-0",
+  "resumen": "Un libro introductorio sobre IA",
+  "genero": "Ciencia",
+  "numeroPaginas": 350,
+  "autorId": 1
+}
+
+---
+
+### 🟢 Registrar un Artículo Científico
+POST /articulos
+{
+  "titulo": "Redes Neuronales Aplicadas",
+  "añoPublicacion": 2022,
+  "editorial": "Beta",
+  "isbn": "978-3-16-148410-1",
+  "resumen": "Estudio sobre aplicaciones de redes neuronales",
+  "areaInvestigacion": "IA",
+  "revista": "Revista de Tecnología",
+  "autorId": 1
+}
+
+---
+
+## 📝 ENDPOINTS DISPONIBLES
+
+| Método | Endpoint         | Descripción                      |
+|--------|------------------|----------------------------------|
+| POST   | /autores         | Registrar un nuevo autor         |
+| GET    | /autores         | Listar todos los autores         |
+| GET    | /autores/{id}    | Obtener un autor por ID          |
+| PUT    | /autores/{id}    | Actualizar un autor              |
+| DELETE | /autores/{id}    | Eliminar un autor                |
+
+| POST   | /libros          | Registrar un libro               |
+| GET    | /libros          | Listar todos los libros          |
+| GET    | /libros/{id}     | Obtener un libro por ID          |
+| PUT    | /libros/{id}     | Actualizar un libro              |
+| DELETE | /libros/{id}     | Eliminar un libro                |
+
+| POST   | /articulos       | Registrar un artículo científico |
+| GET    | /articulos       | Listar todos los artículos       |
+| GET    | /articulos/{id}  | Obtener un artículo por ID       |
+| PUT    | /articulos/{id}  | Actualizar un artículo           |
+| DELETE | /articulos/{id}  | Eliminar un artículo             |
+
+---
+
+## 📘 URL SWAGGER (si usaste SpringFox)
+http://localhost:8080/swagger-ui.html
+
+---
+
+## ✅ NOTAS FINALES
+
+- Asegúrate de tener instalado PostgreSQL y crear la base de datos `api_db`.
+- Reemplaza `tu_contraseña` por la contraseña real de tu usuario PostgreSQL.
+- En producción, usa `ddl-auto: validate` o `none`.
+- Si usas SpringFox y hay errores, considera migrar a SpringDoc OpenAPI.
+
+### ACCEDER A LA DOCUMENTACION
+http://localhost:8080/swagger-ui.html
+
+http://localhost:8080/v3/api-docs
+
+## COMENTAR LOS CONTROLADORES
+
+@RestController
+@RequestMapping("/autores")
+@Tag(name = "Autores", description = "Gestión de autores")
+public class AutorController {
+
+    @Autowired
+    private AutorService autorService;
+
+    @GetMapping
+    @Operation(summary = "Listar todos los autores")
+    public List<ResponseDto> listar() {
+        return autorService.listarAutores();
+    }
+
+    @PostMapping
+    @Operation(summary = "Registrar un nuevo autor")
+    public ResponseDto crear(@RequestBody AutorDto dto) {
+        return autorService.crearAutor(dto);
+    }
+}
