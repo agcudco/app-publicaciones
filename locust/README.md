@@ -12,7 +12,7 @@ pip install locust
 ## ejecutar prueba
 
 ```
-locust -f locustfile.py
+python -m locust -f locustfile.py
 ```
 
 Luego abrir:
