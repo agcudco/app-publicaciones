@@ -10,6 +10,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HoraServidorDto {
-    private long horaServidor;
-    private Map<String, Long> diferencias;
+    private long horaServidor;              // Hora promedio o ajustada
+    private Map<String, Long> diferencias;  // Diferencia entre hora original y ajustada por nodo
 }

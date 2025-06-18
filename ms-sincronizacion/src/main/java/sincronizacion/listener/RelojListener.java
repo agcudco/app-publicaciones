@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 import sincronizacion.dto.HoraClienteDto;
 import sincronizacion.service.SincronizacionService;
 
+/**
+ * Escucha mensajes de tipo 'hora' desde RabbitMQ.
+ * Cada mensaje representa la hora local de un nodo cliente.
+ */
 @Component
 public class RelojListener {
 
@@ -17,6 +21,10 @@ public class RelojListener {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Recibe un mensaje JSON desde la cola 'reloj.solicitud'
+     * Lo convierte a HoraClienteDto y lo registra en el servicio
+     */
     @RabbitListener(queues = "reloj.solicitud")
     public void recibirSolicitud(String mensajeJson) {
         try {
