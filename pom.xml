@@ -17,6 +17,7 @@
     <modules>
         <module>publicaciones</module>
         <module>ms-notifications</module>
+        <module>ms-sincronizacion</module>
     </modules>
 
     <!-- Propiedades comunes -->
